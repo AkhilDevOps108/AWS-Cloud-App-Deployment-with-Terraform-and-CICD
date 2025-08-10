@@ -3,11 +3,17 @@ FROM node:18-alpine
 
 WORKDIR /usr/src/app
 
-# copy package.json first to install dependencies
+# Copy package files
 COPY app/package*.json ./
-RUN npm ci --only=production
 
-# copy app source
+# Install dependencies
+RUN if [ -f package-lock.json ]; then \
+      npm ci --only=production; \
+    else \
+      npm install --only=production; \
+    fi
+
+# Copy app source
 COPY app/ .
 
 EXPOSE 3000
